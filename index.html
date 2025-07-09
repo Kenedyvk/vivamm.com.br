@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M&M EVENTOS - Coquetel para 50 Pessoas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Gold Accent -->
+    <!-- Application Structure Plan: A single-page, section-based layout was chosen to transform the static flyer into an engaging sales page. The structure flows from a main header with the core offer, to a dashboard with key metrics (total items, price), then to a detailed section with lists and an interactive chart to visualize the menu, and finally to a clear call-to-action section for contact. This guides the user logically from the high-level value proposition to the details and encourages them to take action, which is more effective than a simple text list. The LLM-powered features section has been replaced by a video embed, providing a dynamic visual element directly within the application. -->
+    <!-- Visualization & Content Choices: Report Info: Food item quantities (fritos, assados, mini pizza, etc.). -> Goal: Visually compare the proportion of each food item in the package. -> Viz/Presentation Method: Donut Chart. -> Interaction: On hover, tooltips display the item name and quantity. -> Justification: A donut chart is ideal for showing part-to-whole relationships, making the data more digestible and visually appealing than a list. It quickly highlights that fried snacks are the main component. -> Library/Method: Chart.js on a <canvas> element. -->
+    <!-- Video Embedding: Goal: Provide a dynamic visual element (e.g., event highlights, promotional video). -> Viz/Presentation Method: Embedded video (iframe). -> Interaction: Standard video playback controls. -> Justification: Enhances engagement and can convey atmosphere or services more effectively than text. -> Library/Method: Standard HTML iframe. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #FDFBF8;
+        }
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: auto;
+            margin: auto;
+            aspect-ratio: 1 / 1;
+        }
+        .stat-card {
+            background-color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="text-stone-800">
+
+    <header class="bg-stone-800 text-white py-20 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-40"></div>
+        <div class="relative z-10">
+            <h1 class="font-display text-5xl md:text-7xl">M&M EVENTOS</h1>
+            <p class="mt-4 text-xl text-stone-300">O seu evento, o nosso sabor.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 md:py-20">
+
+        <section id="oferta" class="text-center">
+            <h2 class="font-display text-4xl md:text-5xl text-amber-700">Coquetel de Salgados</h2>
+            <p class="mt-4 text-lg md:text-xl max-w-3xl mx-auto">
+                Uma solução completa e deliciosa para a sua celebração, perfeitamente dimensionada para <strong>50 convidados</strong>. Qualidade e praticidade para que possa aproveitar o seu momento.
+            </p>
+        </section>
+        
+        <section id="dashboard" class="mt-16">
+             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div class="stat-card p-6 rounded-lg text-center shadow-lg">
+                    <p class="text-lg text-stone-600">Total de Itens</p>
+                    <p id="total-items" class="font-display text-5xl font-bold text-amber-800">1.338+</p>
+                    <p class="text-sm text-stone-500">Comida & Bebida</p>
+                </div>
+                <div class="stat-card p-6 rounded-lg text-center shadow-lg">
+                    <p class="text-lg text-stone-600">Serviço Completo Para</p>
+                    <p class="font-display text-5xl font-bold text-amber-800">50</p>
+                    <p class="text-sm text-stone-500">Convidados</p>
+                </div>
+                <div class="stat-card p-6 rounded-lg text-center shadow-lg">
+                    <p class="text-lg text-stone-600">Investimento</p>
+                    <p class="font-display text-5xl font-bold text-amber-800">R$1.600</p>
+                    <p class="text-sm text-stone-500">Pacote Completo</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="detalhes" class="mt-20">
+            <div class="text-center mb-12">
+                <h3 class="font-display text-4xl">Detalhes do Pacote</h3>
+                <p class="mt-2 max-w-2xl mx-auto text-stone-600">O nosso pacote foi cuidadosamente montado para garantir uma experiência completa. Veja em detalhes tudo o que está incluído para os seus convidados.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="bg-white p-8 rounded-lg shadow-xl">
+                    <div class="mb-8">
+                        <h4 class="text-2xl font-bold border-b-2 border-amber-500 pb-2 inline-block">Cardápio Delicioso</h4>
+                        <ul class="mt-4 space-y-3 text-stone-700">
+                            <li class="flex items-center"><span class="text-amber-600 mr-3 text-xl">🍽️</span> 850 Salgados fritos na hora</li>
+                            <li class="flex items-center"><span class="text-amber-600 mr-3 text-xl">🥐</span> 150 Salgados assados</li>
+                            <li class="flex items-center"><span class="text-amber-600 mr-3 text-xl">🌭</span> 100 Mini Cachorros-Quentes</li>
+                            <li class="flex items-center"><span class="text-amber-600 mr-3 text-xl">🍕</span> 100 Mini Pizzas</li>
+                            <li class="flex items-center"><span class="text-amber-600 mr-3 text-xl">🥟</span> 100 Mini Pastéis</li>
+                            <li class="flex items-center"><span class="text-amber-600 mr-3 text-xl">🍟</span> 6kg de Batata Palito</li>
+                            <li class="flex items-center"><span class="text-amber-600 mr-3 text-xl">🥤</span> 20 Litros de Refrigerante</li>
+                            <li class="flex items-center"><span class="text-amber-600 mr-3 text-xl">🍹</span> 12 Litros de Suco</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-2xl font-bold border-b-2 border-amber-500 pb-2 inline-block">Equipa Profissional</h4>
+                        <ul class="mt-4 space-y-3 text-stone-700">
+                            <li class="flex items-center"><span class="text-amber-600 mr-3 text-xl">👨‍🍳</span> 1 Fritadeira</li>
+                            <li class="flex items-center"><span class="text-amber-600 mr-3 text-xl">🙋‍♂️</span> 1 Auxiliar</li>
+                            <li class="flex items-center"><span class="text-amber-600 mr-3 text-xl">🤵</span> 1 Garçom</li>
+                            <li class="flex items-center font-semibold"><span class="text-amber-600 mr-3 text-xl">✨</span> Todos devidamente uniformizados</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="p-4">
+                    <h4 class="text-2xl font-bold text-center mb-4">Composição do Cardápio</h4>
+                    <p class="text-center text-stone-600 mb-6">Passe o rato sobre o gráfico para ver as quantidades de cada item de comer.</p>
+                    <div class="chart-container">
+                        <canvas id="menuChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="event-video" class="mt-20 bg-stone-50 p-12 rounded-lg shadow-xl text-center">
+            <h3 class="font-display text-4xl text-amber-700 mb-8">Veja a M&M EVENTOS em Ação!</h3>
+            <p class="max-w-2xl mx-auto text-stone-600 mb-8">Assista ao nosso vídeo promocional para ter uma ideia da qualidade e da atmosfera que levamos aos seus eventos. Prepare-se para se inspirar!</p>
+            <div class="video-container mx-auto max-w-3xl">
+                <!-- Por favor, substitua o 'src' abaixo pelo URL do seu vídeo do YouTube ou de outra plataforma. -->
+                <!-- Exemplo de URL do YouTube: https://www.youtube.com/embed/VIDEO_ID_AQUI -->
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </section>
+
+        <section id="contato" class="mt-20 text-center bg-stone-800 text-white p-12 rounded-lg shadow-2xl">
+            <h3 class="font-display text-4xl">Pronto para celebrar?</h3>
+            <p class="mt-4 max-w-2xl mx-auto text-stone-300">Garanta já a data do seu evento com a qualidade M&M EVENTOS. Entre em contacto connosco e faça o seu orçamento.</p>
+            <div class="mt-8 flex flex-col md:flex-row justify-center items-center gap-4">
+                <a href="https://wa.me/5561992170794" target="_blank" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105 w-full md:w-auto">
+                    WhatsApp (61) 9 9217-0794
+                </a>
+                <a href="https://wa.me/556198917615" target="_blank" class="bg-stone-700 hover:bg-stone-600 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105 w-full md:w-auto">
+                    WhatsApp (61) 9 9891-7615
+                </a>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="text-center py-6 bg-stone-100 mt-12">
+        <p>&copy; 2025 M&M EVENTOS Brasília. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuData = {
+                labels: [
+                    'Salgados Fritos', 
+                    'Salgados Assados', 
+                    'Mini Cachorro-Quente', 
+                    'Mini Pizza', 
+                    'Mini Pastel',
+                    'Batata Palito (proporção)'
+                ],
+                datasets: [{
+                    label: 'Quantidade',
+                    data: [850, 150, 100, 100, 100, 60],
+                    backgroundColor: [
+                        '#a16207', 
+                        '#ca8a04',
+                        '#eab308',
+                        '#facc15',
+                        '#fde047',
+                        '#fef08a'
+                    ],
+                    borderColor: '#FDFBF8',
+                    borderWidth: 4,
+                    hoverOffset: 12
+                }]
+            };
+
+            const totalItems = [850, 150, 100, 100, 100, 6, 20, 12].reduce((a, b) => a + b, 0);
+            document.getElementById('total-items').textContent = totalItems.toLocaleString('pt-BR');
+
+            const ctx = document.getElementById('menuChart').getContext('2d');
+            const menuChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: menuData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                             labels: {
+                                color: '#44403c',
+                                font: {
+                                    family: "'Montserrat', sans-serif",
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        let value = context.parsed;
+                                        if (context.label.includes('Batata')) {
+                                           label += '6 kg';
+                                        } else {
+                                           label += value + ' unidades';
+                                        }
+                                    }
+                                    return label;
+                                }
+                            },
+                            backgroundColor: '#44403c',
+                            titleFont: {
+                                size: 16,
+                                family: "'Montserrat', sans-serif"
+                            },
+                            bodyFont: {
+                                size: 14,
+                                family: "'Montserrat', sans-serif"
+                            },
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false,
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        });
+    </script>
+</body>
+</html>
